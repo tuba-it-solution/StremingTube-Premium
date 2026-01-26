@@ -288,7 +288,7 @@
             // Setup Iframe (Localhost ready)
             const iframe = document.getElementById('videoPlayer');
             const originUrl = window.location.origin;
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1&origin=${originUrl}&widget_referrer=${originUrl}`;
+            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1&origin=${originUrl}&widget_referrer=${originUrl}`;
 
             document.getElementById('videoTitle').innerText = snippet.title;
             document.getElementById('channelName').innerText = snippet.channelTitle;
@@ -391,3 +391,4 @@
     </script>
 </body>
 </html>
+
