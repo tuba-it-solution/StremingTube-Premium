@@ -3,392 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamTube Modern</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="description" content="Nonton Film dan Series Gratis Subtitle Indonesia">
+    <title>TubaFlix - Nonton Tanpa Batas</title>
     <style>
-        /* CSS Variables - Default (Light Mode) */
+        /* --- VARIABLES & RESET --- */
         :root {
-            --bg-base: #f9f9f9;
-            --bg-surface: #ffffff;
-            --bg-hover: #f0f0f0;
-            --border-color: #e5e5e5;
-            --text-primary: #0f0f0f;
-            --text-secondary: #606060;
-            --accent: #ff0000;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --radius-lg: 12px;
-            --radius-md: 8px;
+            --bg-main: #141414;
+            --bg-card: #1f1f1f;
+            --primary: #e50914;
+            --text-main: #ffffff;
+            --text-sec: #b3b3b3;
+            --nav-height: 70px;
+            --radius: 8px;
+            --shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        /* Dark Mode Variables */
-        body.dark-mode {
-            --bg-base: #0f0f0f;
-            --bg-surface: #272727;
-            --bg-hover: #3f3f3f;
-            --border-color: #3d3d3d;
-            --text-primary: #ffffff;
-            --text-secondary: #aaaaaa;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-
-        body { background: var(--bg-base); color: var(--text-primary); overflow-x: hidden; transition: background 0.3s; }
-
-        /* Navbar Modern */
-        header {
-            position: fixed; top: 0; width: 100%; height: 64px; background: var(--bg-surface);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-            z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border-color);
-            transition: background 0.3s;
+        /* --- UTILITIES --- */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 4%; }
+        .hidden { display: none !important; }
+        .btn {
+            padding: 0.8rem 1.5rem; border: none; border-radius: 4px; 
+            cursor: pointer; font-weight: bold; transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
         }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #f40612; }
+        .btn-sec { background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(5px); }
+        .btn-sec:hover { background: rgba(255,255,255,0.3); }
 
-        .logo { font-size: 22px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
-        .logo i { color: var(--accent); font-size: 28px; }
-
-        .search-bar { display: flex; width: 45%; max-width: 650px; }
-        .search-bar input { flex: 1; padding: 10px 18px; background: var(--bg-base); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 20px 0 0 20px; outline: none; font-size: 16px; transition: border 0.2s; }
-        .search-bar input:focus { border-color: #065fd4; }
-        .search-bar button { padding: 10px 24px; background: var(--bg-hover); border: 1px solid var(--border-color); border-left: none; border-radius: 0 20px 20px 0; color: var(--text-primary); cursor: pointer; transition: 0.2s; }
-        .search-bar button:hover { background: var(--border-color); }
-
-        .nav-icons { display: flex; gap: 15px; align-items: center; }
-        .icon-btn { background: var(--bg-hover); border: none; color: var(--text-primary); font-size: 18px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .icon-btn:hover { background: var(--border-color); transform: scale(1.05); }
-
-        /* Kategori Scroll Horizontal */
-        .categories { margin-top: 64px; padding: 12px 24px; display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid var(--border-color); background: var(--bg-surface); scroll-behavior: smooth; }
-        .categories::-webkit-scrollbar { display: none; }
-        .cat-btn { padding: 8px 16px; background: var(--bg-hover); border-radius: var(--radius-md); color: var(--text-primary); cursor: pointer; white-space: nowrap; font-size: 14px; font-weight: 500; transition: 0.2s; border: 1px solid transparent; }
-        .cat-btn.active { background: var(--text-primary); color: var(--bg-surface); }
-        .cat-btn:hover:not(.active) { background: var(--border-color); }
-
-        /* Main Grid & Responsiveness */
-        .main-container { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; padding: 24px; max-width: 1600px; margin: 0 auto; transition: 0.3s; }
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            z-index: 1000; transition: 0.3s;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+        .navbar.scrolled { background-color: var(--bg-main); box-shadow: var(--shadow); }
+        .nav-content {
+            display: flex; justify-content: space-between; align-items: center; height: 100%;
+        }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-decoration: none; letter-spacing: 1px; }
         
-        /* Theater Mode */
-        .theater-mode { grid-template-columns: 100%; }
-        .theater-mode .sidebar { display: none !important; }
-
-        /* Video Player Section */
-        .player-section { display: none; background: var(--bg-surface); padding: 16px; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; background: #000; border-radius: var(--radius-md); overflow: hidden; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-        .video-actions { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 16px; gap: 10px; flex-wrap: wrap; }
-        .video-title { font-size: 20px; font-weight: 600; line-height: 1.4; flex: 1; min-width: 250px; }
-        .action-btns { display: flex; gap: 10px; }
-        .action-btn { background: var(--bg-hover); color: var(--text-primary); border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .action-btn:hover { background: var(--border-color); }
-
-        .channel-info { margin-top: 16px; display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500; color: var(--text-primary); }
-        .channel-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-secondary); }
-        
-        .video-description { margin-top: 16px; background: var(--bg-hover); padding: 16px; border-radius: var(--radius-md); font-size: 14px; color: var(--text-secondary); white-space: pre-wrap; max-height: 90px; overflow: hidden; cursor: pointer; transition: 0.3s; line-height: 1.5; }
-        .video-description.open { max-height: 1000px; color: var(--text-primary); }
-
-        /* Sidebar Modern */
-        .sidebar { display: flex; flex-direction: column; gap: 16px; background: var(--bg-surface); padding: 16px; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
-        .sidebar-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .tab-btn { background: none; border: none; color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 12px; border-radius: var(--radius-md); transition: 0.2s; }
-        .tab-btn.active { background: var(--text-primary); color: var(--bg-surface); }
-        .tab-btn:hover:not(.active) { background: var(--bg-hover); }
-
-        .action-clear { font-size: 12px; color: var(--accent); cursor: pointer; margin-left: auto; align-self: center; font-weight: bold; }
-
-        /* Video List (Sidebar & Grid) */
-        .video-list { display: flex; flex-direction: column; gap: 12px; }
-        .video-item { display: flex; gap: 12px; cursor: pointer; padding: 8px; border-radius: var(--radius-md); transition: 0.2s; align-items: center; }
-        .video-item:hover { background: var(--bg-hover); }
-        .video-item img { width: 140px; height: 80px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow); }
-        .video-info { flex: 1; }
-        .video-item-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
-        .video-item-channel { font-size: 13px; color: var(--text-secondary); }
-
-        /* Home Grid */
-        .home-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .grid-card { cursor: pointer; background: var(--bg-surface); border-radius: var(--radius-lg); overflow: hidden; transition: 0.3s; box-shadow: var(--shadow); padding-bottom: 12px; }
-        .grid-card:hover { transform: translateY(-4px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .grid-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-        .grid-info { padding: 12px 16px 0; display: flex; gap: 12px; }
-        .grid-text { flex: 1; }
-        .grid-title { font-size: 16px; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; color: var(--text-primary); margin-bottom: 4px; }
-        .grid-channel { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-
-        /* Loading Skeleton Animation */
-        .skeleton { background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border-color) 50%, var(--bg-hover) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: var(--radius-md); }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* Responsiveness */
-        @media (max-width: 1000px) {
-            .main-container { grid-template-columns: 1fr; }
-            .search-bar { width: 50%; }
-            .sidebar { margin-top: 10px; }
-            .video-item img { width: 120px; height: 70px; }
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links li a {
+            color: var(--text-sec); text-decoration: none; font-size: 0.9rem; transition: 0.2s; cursor: pointer;
         }
-        @media (max-width: 650px) {
-            header { padding: 0 16px; }
-            .logo span { display: none; }
-            .search-bar { width: 100%; margin: 0 10px; max-width: none; }
-            .icon-btn.hide-mobile { display: none; }
-            .home-grid { grid-template-columns: 1fr; }
-            .grid-card { box-shadow: none; border-bottom: 1px solid var(--border-color); border-radius: 0; padding-bottom: 16px; }
-            .player-section { padding: 0; box-shadow: none; border-radius: 0; }
+        .nav-links li a:hover, .nav-links li a.active { color: white; font-weight: bold; }
+
+        .search-box { position: relative; }
+        .search-input {
+            background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 8px 15px 8px 35px;
+            color: white; border-radius: 20px; transition: 0.3s; width: 200px;
+        }
+        .search-input:focus { width: 300px; border-color: var(--primary); background: black; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
+
+        /* --- MOBILE MENU --- */
+        .hamburger { display: none; cursor: pointer; font-size: 1.5rem; }
+        
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 80vh; position: relative; display: flex; align-items: center;
+            background-size: cover; background-position: center;
+            margin-bottom: -100px; /* Overlap gradient */
+        }
+        .hero::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(0deg, var(--bg-main) 0%, rgba(20,20,20,0.6) 50%, rgba(20,20,20,0.4) 100%);
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; margin-top: 100px; }
+        .hero-title { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1.1; }
+        .hero-meta { display: flex; gap: 15px; margin-bottom: 1.5rem; color: #46d369; font-weight: bold; }
+        .hero-desc { color: white; font-size: 1.1rem; line-height: 1.5; margin-bottom: 2rem; 
+                     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* --- GRID LAYOUT --- */
+        .section-title { font-size: 1.5rem; margin: 2rem 0 1rem; font-weight: 600; padding-left: 4%; border-left: 4px solid var(--primary); }
+        .movie-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px; padding-bottom: 50px;
+        }
+        
+        .movie-card {
+            background: var(--bg-card); border-radius: var(--radius); overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; position: relative;
+        }
+        .movie-card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .poster-wrapper { position: relative; aspect-ratio: 2/3; overflow: hidden; }
+        .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .rating-badge {
+            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8);
+            color: #46d369; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.8rem;
+        }
+        .card-info { padding: 12px; }
+        .card-title { font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+        .card-meta { font-size: 0.8rem; color: var(--text-sec); display: flex; justify-content: space-between; }
+
+        /* --- DETAIL PAGE --- */
+        #detail-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--bg-main); z-index: 2000; overflow-y: auto;
+            transform: translateY(100%); transition: transform 0.4s ease-in-out;
+        }
+        #detail-view.active { transform: translateY(0); }
+        .back-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 2001;
+            background: rgba(0,0,0,0.5); color: white; border: none;
+            padding: 10px 15px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+        }
+        .player-wrapper {
+            position: relative; padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: black; margin-top: 60px;
+        }
+        .player-wrapper iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+        .detail-info { padding: 30px 4%; }
+        .episode-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 20px;
+        }
+        .episode-btn {
+            background: #333; color: white; padding: 10px; text-align: center;
+            border-radius: 4px; cursor: pointer; transition: 0.2s;
+        }
+        .episode-btn:hover, .episode-btn.active { background: var(--primary); }
+
+        /* --- SKELETON LOADING --- */
+        .skeleton { background: linear-gradient(90deg, #1f1f1f 25%, #2a2a2a 50%, #1f1f1f 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .sk-card { height: 320px; border-radius: var(--radius); }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: var(--nav-height); left: -100%; width: 100%; height: calc(100vh - var(--nav-height));
+                background: var(--bg-main); flex-direction: column; padding: 20px; transition: 0.3s;
+            }
+            .nav-links.active { left: 0; }
+            .hamburger { display: block; }
+            .search-input { width: 150px; }
+            .search-input:focus { width: 180px; }
+            .hero-title { font-size: 2rem; }
+            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo" onclick="goHome()"><i class="fab fa-youtube"></i> <span>StreamTube</span></div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Cari musik, tutorial, podcast...">
-            <button onclick="handleSearch()"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="nav-icons">
-            <button class="icon-btn" onclick="toggleTheme()" title="Mode Gelap/Terang"><i class="fas fa-moon" id="themeIcon"></i></button>
-            <button class="icon-btn hide-mobile" onclick="showTab('watchLater')" title="Tonton Nanti"><i class="fas fa-clock"></i></button>
-            <button class="icon-btn hide-mobile" onclick="showTab('history')" title="Riwayat"><i class="fas fa-history"></i></button>
-        </div>
-    </header>
-
-    <div class="categories">
-        <div class="cat-btn active" onclick="filterCategory('video viral indonesia terbaru', this)">Semua</div>
-        <div class="cat-btn" onclick="filterCategory('Musik Pop Indonesia Terbaru', this)">Musik</div>
-        <div class="cat-btn" onclick="filterCategory('Tutorial Web Programming', this)">Programming</div>
-        <div class="cat-btn" onclick="filterCategory('Podcast Deddy Corbuzier', this)">Podcast</div>
-        <div class="cat-btn" onclick="filterCategory('Berita Terkini Indonesia', this)">Berita</div>
-        <div class="cat-btn" onclick="filterCategory('Game Walkthrough Indonesia', this)">Gaming</div>
-    </div>
-
-    <div class="main-container" id="mainLayout">
-        <div class="player-section" id="playerSection">
-            <div class="video-wrapper">
-                <iframe id="videoPlayer" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
+    <nav class="navbar" id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo" onclick="app.router.go('trending')">STREAMFLIX</a>
             
-            <div class="video-actions">
-                <div class="video-title" id="videoTitle">Judul Video</div>
-                <div class="action-btns">
-                    <button class="action-btn" onclick="toggleTheaterMode()"><i class="fas fa-expand"></i> Teater</button>
-                    <button class="action-btn" onclick="addToWatchLater()"><i class="fas fa-plus"></i> Simpan</button>
-                    <button class="action-btn" onclick="shareVideo()"><i class="fas fa-share"></i> Bagikan</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="app.router.go('trending')" class="active">Home</a></li>
+                <li><a onclick="app.router.go('indonesian-movies')">Film Indo</a></li>
+                <li><a onclick="app.router.go('indonesian-drama')">Drama Indo</a></li>
+                <li><a onclick="app.router.go('kdrama')">K-Drama</a></li>
+                <li><a onclick="app.router.go('anime')">Anime</a></li>
+            </ul>
+
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Cari film...">
                 </div>
+                <div class="hamburger" onclick="toggleMenu()">☰</div>
             </div>
-
-            <div class="channel-info">
-                <div class="channel-avatar"><i class="fas fa-user"></i></div>
-                <span id="channelName">Nama Channel</span>
-            </div>
-            <div class="video-description" id="videoDesc" onclick="this.classList.toggle('open')" title="Klik untuk meluaskan/mengecilkan"></div>
         </div>
+    </nav>
 
-        <div class="sidebar" id="sidebarSection" style="display: none;">
-            <div class="sidebar-tabs">
-                <button class="tab-btn active" id="tab-related" onclick="showTab('related')">Terkait</button>
-                <button class="tab-btn" id="tab-watchLater" onclick="showTab('watchLater')">Disimpan</button>
-                <button class="tab-btn" id="tab-history" onclick="showTab('history')">Riwayat</button>
-                <span id="clearBtn" class="action-clear" style="display:none;" onclick="clearCurrentList()">Hapus Semua</span>
-            </div>
-            <div class="video-list" id="sidebarList"></div>
+    <main id="app">
+        <div id="hero-slot"></div>
+
+        <div class="container">
+            <h2 id="page-title" class="section-title">Trending Now</h2>
+            <div id="grid-content" class="movie-grid">
+                </div>
+            <div id="sentinel" style="height: 50px; margin-bottom: 50px;"></div>
         </div>
+    </main>
 
-        <div class="home-grid" id="homeGrid"></div>
+    <div id="detail-view">
+        <button class="back-btn" onclick="app.ui.closeDetail()">← Kembali</button>
+        <div id="player-container" class="player-wrapper">
+            </div>
+        <div class="detail-info container">
+            <h1 id="detail-title" style="margin-bottom: 10px;">Judul Film</h1>
+            <div style="color: #46d369; font-weight: bold; margin-bottom: 15px;" id="detail-meta">2023 • Movie • ⭐ 8.5</div>
+            <p id="detail-desc" style="color: #ccc; line-height: 1.6; max-width: 800px;">Deskripsi film...</p>
+            
+            <div id="episode-section" class="hidden">
+                <h3 style="margin-top: 30px;">Episodes</h3>
+                <div id="episode-list" class="episode-grid"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // API KEY YOUTUBE ANDA
-        const API_KEY = 'AIzaSyBwRfuNzEu6WhfWeWvE4V2hQEBGw_zVpYM'; 
-        let currentVideo = null; 
-        let currentTab = 'related';
-
-        // --- THEME & INITIALIZATION ---
-        window.onload = () => {
-            initTheme();
-            fetchVideos('video trending indonesia');
+        // --- API CONFIGURATION ---
+        const API_CONFIG = {
+            BASE_URL: 'https://zeldvorik.ru/apiv3/api.php',
+            ENDPOINTS: {
+                trending: 'trending',
+                indoMovie: 'indonesian-movies',
+                indoDrama: 'indonesian-drama',
+                kdrama: 'kdrama',
+                anime: 'anime',
+                search: 'search',
+                detail: 'detail'
+            }
         };
 
-        function initTheme() {
-            const isDark = localStorage.getItem('theme') === 'dark';
-            if(isDark) document.body.classList.add('dark-mode');
-            updateThemeIcon(isDark);
-        }
+        // --- UTILS ---
+        const debounce = (func, wait) => {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        };
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
-        }
+        // --- APP CORE ---
+        class App {
+            constructor() {
+                this.state = {
+                    currentAction: 'trending',
+                    page: 1,
+                    isLoading: false,
+                    hasMore: true,
+                    isSearch: false,
+                    searchQuery: ''
+                };
+                this.ui = new UI();
+                this.router = new Router(this);
+                this.init();
+            }
 
-        function updateThemeIcon(isDark) {
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
-        // --- NAVIGATION & SEARCH ---
-        document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
-
-        function goHome() {
-            document.getElementById('playerSection').style.display = 'none';
-            document.getElementById('sidebarSection').style.display = 'none';
-            document.getElementById('mainLayout').classList.remove('theater-mode');
-            document.title = "StreamTube Modern";
-            fetchVideos('video trending indonesia');
-        }
-
-        function filterCategory(q, el) {
-            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-            el.classList.add('active');
-            goHome(); fetchVideos(q);
-        }
-
-        function handleSearch() {
-            const q = document.getElementById('searchInput').value;
-            if(q) { goHome(); fetchVideos(q); }
-        }
-
-        // --- FETCHING DATA ---
-        async function fetchVideos(query) {
-            const grid = document.getElementById('homeGrid');
-            grid.innerHTML = Array(12).fill(`<div class="grid-card skeleton" style="height:250px;"></div>`).join('');
-            
-            try {
-                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                
-                grid.innerHTML = '';
-                data.items.forEach(item => {
-                    grid.innerHTML += `
-                        <div class="grid-card" onclick='playVideo("${item.id.videoId}", ${JSON.stringify(item.snippet).replace(/'/g, "&apos;")})'>
-                            <img src="${item.snippet.thumbnails.high.url}" loading="lazy">
-                            <div class="grid-info">
-                                <div class="channel-avatar" style="width:36px;height:36px;font-size:16px;"><i class="fas fa-user"></i></div>
-                                <div class="grid-text">
-                                    <div class="grid-title">${item.snippet.title}</div>
-                                    <div class="grid-channel">${item.snippet.channelTitle}</div>
-                                </div>
-                            </div>
-                        </div>`;
+            init() {
+                // Scroll Listener for Navbar
+                window.addEventListener('scroll', () => {
+                    const nav = document.getElementById('navbar');
+                    if (window.scrollY > 50) nav.classList.add('scrolled');
+                    else nav.classList.remove('scrolled');
                 });
-            } catch(e) { console.error(e); grid.innerHTML = '<div style="text-align:center;width:100%;grid-column:1/-1;">Gagal memuat video. Cek koneksi internet atau limit API Anda.</div>'; }
-        }
 
-        function playVideo(videoId, snippet) {
-            currentVideo = { id: videoId, snippet: snippet };
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Search Listener
+                document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+                    const query = e.target.value;
+                    if (query.length > 2) {
+                        this.search(query);
+                    } else if (query.length === 0) {
+                        this.router.go('trending');
+                    }
+                }, 800));
 
-            document.getElementById('homeGrid').innerHTML = '';
-            document.getElementById('playerSection').style.display = 'block';
-            document.getElementById('sidebarSection').style.display = 'flex';
+                // Infinite Scroll Observer
+                this.observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting && this.state.hasMore && !this.state.isLoading && !this.state.isSearch) {
+                        this.loadMore();
+                    }
+                });
+                this.observer.observe(document.getElementById('sentinel'));
 
-            // Ubah Title Browser
-            document.title = snippet.title;
+                // Initial Load
+                this.loadContent('trending');
+            }
 
-            // Setup Iframe (Localhost ready)
-            const iframe = document.getElementById('videoPlayer');
-            const originUrl = window.location.origin;
-            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1&origin=${originUrl}&widget_referrer=${originUrl}`;
+            async fetchData(action, page = 1, extraParams = '') {
+                this.state.isLoading = true;
+                if (page === 1) this.ui.showSkeleton();
+                
+                try {
+                    const url = `${API_CONFIG.BASE_URL}?action=${action}&page=${page}${extraParams}`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    
+                    this.state.isLoading = false;
+                    return data;
+                } catch (error) {
+                    console.error("Fetch Error:", error);
+                    this.state.isLoading = false;
+                    this.ui.showError();
+                    return null;
+                }
+            }
 
-            document.getElementById('videoTitle').innerText = snippet.title;
-            document.getElementById('channelName').innerText = snippet.channelTitle;
-            document.getElementById('videoDesc').innerText = snippet.description || "Tidak ada deskripsi untuk video ini.";
+            async loadContent(action, reset = true) {
+                if (reset) {
+                    this.state.page = 1;
+                    this.state.hasMore = true;
+                    this.state.currentAction = action;
+                    this.state.isSearch = false;
+                    this.ui.clearGrid();
+                    window.scrollTo(0, 0);
+                    
+                    // Update active nav
+                    document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+                }
 
-            saveToStorage('yt_history_modern', videoId, snippet);
-            showTab('related');
-        }
+                const data = await this.fetchData(action, this.state.page);
+                
+                if (data && data.success) {
+                    // Render Hero only on first page of Trending
+                    if (action === 'trending' && this.state.page === 1) {
+                        this.ui.renderHero(data.items[0]);
+                    } else if (this.state.page === 1) {
+                        this.ui.hideHero();
+                    }
 
-        // --- FEATURES (THEATER, SHARE, WATCH LATER, TABS) ---
-        function toggleTheaterMode() {
-            document.getElementById('mainLayout').classList.toggle('theater-mode');
-        }
+                    this.ui.renderGrid(data.items);
+                    
+                    // Check if has more (simple logic based on returned count)
+                    if (data.items.length < 10) this.state.hasMore = false; 
+                }
+            }
 
-        function shareVideo() {
-            if(!currentVideo) return;
-            const url = `https://youtu.be/${currentVideo.id}`;
-            navigator.clipboard.writeText(url).then(() => alert('Link video berhasil disalin: ' + url));
-        }
+            async loadMore() {
+                this.state.page++;
+                await this.loadContent(this.state.currentAction, false);
+            }
 
-        function addToWatchLater() {
-            if(!currentVideo) return;
-            saveToStorage('yt_watch_later_modern', currentVideo.id, currentVideo.snippet);
-            alert('Video berhasil disimpan ke daftar Tonton Nanti!');
-        }
+            async search(query) {
+                this.state.isSearch = true;
+                this.state.searchQuery = query;
+                this.ui.clearGrid();
+                this.ui.hideHero();
+                document.getElementById('page-title').innerText = `Search: "${query}"`;
+                
+                const data = await this.fetchData('search', 1, `&q=${query}`);
+                if (data && data.items) {
+                    this.ui.renderGrid(data.items);
+                }
+            }
 
-        function saveToStorage(key, videoId, snippet) {
-            let data = JSON.parse(localStorage.getItem(key)) || [];
-            data = data.filter(v => v.id !== videoId);
-            data.unshift({ id: videoId, snippet: snippet });
-            if (data.length > 50) data.pop();
-            localStorage.setItem(key, JSON.stringify(data));
-        }
-
-        // --- SIDEBAR TABS & LIST MANAGEMENT ---
-        function showTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tab}`)?.classList.add('active');
-            
-            const clearBtn = document.getElementById('clearBtn');
-            clearBtn.style.display = (tab === 'related') ? 'none' : 'block';
-
-            const list = document.getElementById('sidebarList');
-            list.innerHTML = Array(6).fill(`<div class="video-item skeleton" style="height:80px;"></div>`).join('');
-
-            document.getElementById('homeGrid').innerHTML = '';
-            document.getElementById('sidebarSection').style.display = 'flex';
-
-            if(tab === 'related' && currentVideo) fetchRelated(currentVideo.snippet.title);
-            else if(tab === 'watchLater') renderStorageList('yt_watch_later_modern', 'Belum ada video yang disimpan.');
-            else if(tab === 'history') renderStorageList('yt_history_modern', 'Belum ada riwayat tontonan.');
-        }
-
-        function renderStorageList(key, emptyMsg) {
-            const list = document.getElementById('sidebarList');
-            const data = JSON.parse(localStorage.getItem(key)) || [];
-            
-            if(data.length === 0) return list.innerHTML = `<p style="color:var(--text-secondary); text-align:center; padding: 20px;">${emptyMsg}</p>`;
-
-            list.innerHTML = '';
-            data.forEach(item => {
-                list.innerHTML += `
-                    <div class="video-item" onclick='playVideo("${item.id}", ${JSON.stringify(item.snippet).replace(/'/g, "&apos;")})'>
-                        <img src="${item.snippet.thumbnails.medium.url}">
-                        <div class="video-info">
-                            <div class="video-item-title">${item.snippet.title}</div>
-                            <div class="video-item-channel">${item.snippet.channelTitle}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function clearCurrentList() {
-            const key = (currentTab === 'history') ? 'yt_history_modern' : 'yt_watch_later_modern';
-            if(confirm('Apakah Anda yakin ingin menghapus semua daftar ini?')) {
-                localStorage.removeItem(key);
-                showTab(currentTab);
+            async openDetail(detailPath) {
+                const data = await this.fetchData('detail', 1, `&detailPath=${detailPath}`);
+                if (data && data.items && data.items.length > 0) {
+                    this.ui.renderDetail(data.items[0]); // Usually detail returns array with 1 item or object
+                }
             }
         }
 
-        async function fetchRelated(title) {
-            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=8&q=${encodeURIComponent(title)}&type=video&key=${API_KEY}`;
-            const res = await fetch(url);
-            const data = await res.json();
+        // --- UI RENDERER ---
+        class UI {
+            constructor() {
+                this.grid = document.getElementById('grid-content');
+                this.heroSlot = document.getElementById('hero-slot');
+                this.detailView = document.getElementById('detail-view');
+            }
+
+            clearGrid() { this.grid.innerHTML = ''; }
+
+            hideHero() { this.heroSlot.innerHTML = ''; }
+
+            showSkeleton() {
+                let html = '';
+                for(let i=0; i<8; i++) html += `<div class="skeleton sk-card"></div>`;
+                this.grid.innerHTML = html;
+            }
             
-            const list = document.getElementById('sidebarList');
-            list.innerHTML = '';
-            data.items.forEach(item => {
-                list.innerHTML += `
-                    <div class="video-item" onclick='playVideo("${item.id.videoId}", ${JSON.stringify(item.snippet).replace(/'/g, "&apos;")})'>
-                        <img src="${item.snippet.thumbnails.medium.url}">
-                        <div class="video-info">
-                            <div class="video-item-title">${item.snippet.title}</div>
-                            <div class="video-item-channel">${item.snippet.channelTitle}</div>
+            removeSkeleton() {
+                const skels = document.querySelectorAll('.skeleton');
+                skels.forEach(el => el.remove());
+            }
+
+            showError() {
+                this.grid.innerHTML = '<div style="text-align:center; padding: 50px; width: 100%; grid-column: 1/-1;"><h3>Gagal memuat data. Coba lagi nanti.</h3></div>';
+            }
+
+            renderHero(item) {
+                if(!item) return;
+                this.heroSlot.innerHTML = `
+                    <div class="hero" style="background-image: url('${item.poster}')">
+                        <div class="container hero-content">
+                            <h1 class="hero-title">${item.title}</h1>
+                            <div class="hero-meta">
+                                <span>${item.year}</span>
+                                <span>${item.rating || 'N/A'} ⭐</span>
+                                <span>${item.type || 'Movie'}</span>
+                            </div>
+                            <div class="hero-desc">Tonton ${item.title} sekarang. Streaming kualitas HD dengan subtitle Indonesia. Film trending nomor 1 minggu ini.</div>
+                            <button class="btn btn-primary" onclick="app.openDetail('${item.detailPath}')">▶ Putar Sekarang</button>
+                            <button class="btn btn-sec">ℹ Selengkapnya</button>
                         </div>
-                    </div>`;
-            });
+                    </div>
+                `;
+            }
+
+            renderGrid(items) {
+                this.removeSkeleton();
+                items.forEach(item => {
+                    // Filter data sampah
+                    if(!item.poster || !item.title) return;
+
+                    const card = document.createElement('div');
+                    card.className = 'movie-card';
+                    card.onclick = () => app.openDetail(item.detailPath);
+                    card.innerHTML = `
+                        <div class="poster-wrapper">
+                            <img src="${item.poster}" loading="lazy" alt="${item.title}">
+                            ${item.rating ? `<div class="rating-badge">${item.rating}</div>` : ''}
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-meta">
+                                <span>${item.year || ''}</span>
+                                <span>${item.type || 'Movie'}</span>
+                            </div>
+                        </div>
+                    `;
+                    this.grid.appendChild(card);
+                });
+            }
+
+            renderDetail(data) {
+                // Reset Scroll
+                this.detailView.scrollTop = 0;
+                
+                // Populate Info
+                document.getElementById('detail-title').innerText = data.title;
+                document.getElementById('detail-meta').innerText = `${data.year || ''} • ${data.genre || ''} • ⭐ ${data.rating || 'N/A'}`;
+                document.getElementById('detail-desc').innerText = data.description || 'Tidak ada deskripsi.';
+
+                // Setup Player (Priority: streamUrl -> playerUrl)
+                const playerUrl = data.streamUrl || data.playerUrl;
+                const playerContainer = document.getElementById('player-container');
+                
+                if (playerUrl) {
+                    playerContainer.innerHTML = `<iframe src="${playerUrl}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+                } else {
+                    playerContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;">Video tidak tersedia</div>`;
+                }
+
+                // Handle Episodes if TV Series
+                const epSection = document.getElementById('episode-section');
+                const epList = document.getElementById('episode-list');
+                
+                if (data.episodes && data.episodes.length > 0) {
+                    epSection.classList.remove('hidden');
+                    epList.innerHTML = '';
+                    data.episodes.forEach(ep => {
+                        const btn = document.createElement('div');
+                        btn.className = 'episode-btn';
+                        btn.innerText = `Ep ${ep.episode}`;
+                        btn.onclick = () => {
+                            // Change player source if episode clicked
+                            document.querySelectorAll('.episode-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            playerContainer.innerHTML = `<iframe src="${ep.url}" allowfullscreen></iframe>`;
+                        };
+                        epList.appendChild(btn);
+                    });
+                } else {
+                    epSection.classList.add('hidden');
+                }
+
+                // Show Overlay
+                this.detailView.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeDetail() {
+                this.detailView.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                // Stop video by clearing iframe
+                setTimeout(() => {
+                    document.getElementById('player-container').innerHTML = '';
+                }, 400);
+            }
         }
+
+        // --- ROUTER HELPER ---
+        class Router {
+            constructor(appContext) {
+                this.app = appContext;
+            }
+
+            go(action) {
+                // Update Title & Nav
+                const titles = {
+                    'trending': 'Trending Now',
+                    'indonesian-movies': 'Film Indonesia',
+                    'indonesian-drama': 'Drama Indonesia',
+                    'kdrama': 'Korean Drama',
+                    'anime': 'Anime Series'
+                };
+                
+                document.getElementById('page-title').innerText = titles[action] || 'Movies';
+                
+                // Call App Load
+                this.app.loadContent(action);
+                
+                // Update Menu Mobile
+                const navLinks = document.getElementById('navLinks');
+                if(navLinks.classList.contains('active')) toggleMenu();
+            }
+        }
+
+        // --- INIT ---
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        const app = new App();
+
     </script>
 </body>
 </html>
-
